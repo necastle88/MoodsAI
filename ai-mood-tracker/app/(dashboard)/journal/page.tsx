@@ -16,8 +16,6 @@ const getEntries = async () => {
     }
   });
 
-  await analyzeEntry("this is a test entry for analysis, how di you think it will go?");
-
   return entries;
 }
 

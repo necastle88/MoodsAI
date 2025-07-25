@@ -8,7 +8,7 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        "A soft, aesthetically pleasing hexadecimal color code (e.g., '#E0F2FE', '#FBCFE8') that visually represents the tone. The color should align with modern UI principles—low-contrast, accessible, and emotionally intuitive. Must be a valid 6-digit hex code starting with '#', and represent a light, harmonious background color suitable for user interfaces."
+        "A soft, aesthetically pleasing hexadecimal color code that works on a white background (e.g., '#E0F2FE', '#FBCFE8') and that visually represents the tone. The color should align with modern UI principles—low-contrast, accessible, and emotionally intuitive. Must be a valid 6-digit hex code starting with '#', and represent a light, harmonious background color suitable for user interfaces."
       ),
     summary: z
       .string()
@@ -55,12 +55,11 @@ export const analyzeEntry = async (content: any) => {
     modelName: 'gpt-3.5-turbo',
     openAIApiKey: process.env.OPENAI_API_KEY,
   });
-  const result = await model.call(input);
-  console.log('Raw Result:', result);
+    const result = await model.call(input);
+    
   try {
     return parser.parse(result);
   } catch (error) {
-    console.error('Error parsing result:', error);
     throw new Error('Failed to parse AI response');
   }
 };
