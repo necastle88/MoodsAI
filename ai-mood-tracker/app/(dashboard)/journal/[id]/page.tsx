@@ -24,7 +24,9 @@ const EntryPage = async ({ params }: { params: { id: string } }) => {
     { label: 'Negative', value: '' },
     { label: 'Summary', value: '' },
     { label: 'Suggestions', value: '' },
-  ];
+    ];
+    
+    const colorClass = analysisData.find(item => item.label === 'Color')?.value || 'bg-gray-200';
 
   return (
     <div className="h-full w-full grid grid-cols-3">
@@ -34,7 +36,7 @@ const EntryPage = async ({ params }: { params: { id: string } }) => {
       <div className="border-l border-gray-300 p-4 col-span-1">
         <div className="flex justify-between place-items-center mb-4  border-b border-gray-300 pb-4">
           <h2 className="text-2xl font-bold">Entry Details</h2>
-          <div className="w-6 h-6 bg-blue-500 rounded-full mr-3"></div>
+          <div className={`w-6 h-6 ${colorClass} rounded-full mr-3`}></div>
         </div>
         <div>
           <ul className="flex flex-col">
