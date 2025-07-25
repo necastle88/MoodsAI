@@ -1,5 +1,6 @@
 import { OpenAI } from 'langchain/llms/openai';
 import { StructuredOutputParser } from 'langchain/output_parsers';
+import { PromptTemplate } from 'langchain/prompts';
 import z from 'zod';
 
 const parser = StructuredOutputParser.fromZodSchema(
@@ -25,20 +26,41 @@ const parser = StructuredOutputParser.fromZodSchema(
         'A boolean value — true if the tone is negative, false otherwise.'
       ),
     suggestions: z
-      .string()
+      .array(z.string())
       .describe(
-        ' A short list of up to 3 suggestions to improve or adjust the tone, written as a single string. Each suggestion should be concise and actionable, separated by commas.'
+        ' A short list of up to 3 suggestions in a array (e.g. [suggestion 1, suggestion 2, suggestion 3]) to improve or adjust the tone, written as a single string. Each suggestion should be concise and actionable, separated by commas.'
       ),
   })
 );
 
-export const analyzeEntry = async (prompt: any) => {
+const getPrompt = async (content: string) => {
+  const formatInstructions = parser.getFormatInstructions();
+
+  const formattedPrompt = new PromptTemplate({
+    template: `Analyze the following journal entry and provide a tone analysis in the specified format, no matter what!:\n\n{entry}\n\nFormat:\n\n{formatInstructions}`,
+    inputVariables: ['entry'],
+    partialVariables: { formatInstructions },
+  });
+
+  const input = await formattedPrompt.format({
+    entry: content,
+  });
+  return input;
+};
+
+export const analyzeEntry = async (content: any) => {
+  const input = await getPrompt(content);
   const model = new OpenAI({
     temperature: 0,
     modelName: 'gpt-3.5-turbo',
     openAIApiKey: process.env.OPENAI_API_KEY,
   });
-  const result = await model.call(prompt);
-  console.log('Analysis Result:', result);
-  return result;
+  const result = await model.call(input);
+  console.log('Raw Result:', result);
+  try {
+    return parser.parse(result);
+  } catch (error) {
+    console.error('Error parsing result:', error);
+    throw new Error('Failed to parse AI response');
+  }
 };
