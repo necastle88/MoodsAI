@@ -10,7 +10,8 @@ import z from 'zod';
 import { create } from 'domain';
 
 const parser = StructuredOutputParser.fromZodSchema(
-  z.object({
+    z.object({
+      sentimentScore: z.number().describe("sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive."),
     color: z
       .string()
       .describe(
