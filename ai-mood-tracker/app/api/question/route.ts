@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import { qa } from "@/utils/ai";
 import { getUserByClerkID } from "@/utils/auth";
 import { prisma } from "@/utils/db";

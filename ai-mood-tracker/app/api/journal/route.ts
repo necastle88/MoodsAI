@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import { prisma } from "@/utils/db";
 import { getUserByClerkID } from "@/utils/auth";
 import { NextResponse } from "next/server";

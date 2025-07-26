@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import { analyzeEntry } from "@/utils/ai";
 import { getUserByClerkID } from "@/utils/auth";
 import { prisma } from "@/utils/db";
