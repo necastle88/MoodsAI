@@ -21,61 +21,13 @@ const getEntry = async (id: string) => {
 
 const EntryPage = async ({ params }: { params: { id: string } }) => {
   const entry = await getEntry(params.id);
-  const tone = entry?.analysis?.tone ?? '';
-  const summary = entry?.analysis?.summary ?? '';
-  const color = entry?.analysis?.color ?? '';
-  const negative = entry?.analysis?.negative ? 'True' : 'False';
-  const suggestions = entry?.analysis?.suggestions ?? [];
-  const analysisData = [
-    { label: 'Color', value: color },
-    { label: 'Negative', value: negative },
-    { label: 'Tone', value: tone },
-    { label: 'Summary', value: summary },
-    { label: 'Suggestions', value: suggestions },
-  ];
-
-  const colorValue = analysisData.find((item) => item.label === 'Color')?.value;
-  const colorClass = typeof colorValue === 'string' ? colorValue : undefined;
+    if (!entry) {
+        return <div className="p-10 bg-zinc-400/10 h-full">Entry not found</div>;
+    }
 
   return (
     <div className="h-full w-full grid grid-cols-3">
-      <div className="flex flex-col col-span-2 items-center justify-center h-screen">
         <Editor entry={entry} />
-      </div>
-      <div className="border-l border-gray-300 p-4 col-span-1">
-        <div className="flex justify-between place-items-center mb-4  border-b border-gray-300 pb-4">
-          <h2 className="text-2xl font-bold">Entry Details</h2>
-          <div
-            className={`w-6 h-6 rounded-full mr-3`}
-            style={{ backgroundColor: colorClass }}
-          ></div>
-        </div>
-        <div>
-          <ul className="flex flex-col">
-            {analysisData.map((item, index) =>
-              item.label === 'Color' ? null : (
-                <li key={index} className="mb-2 justify-between gap-4 flex-col">
-                  <div className="font-semibold">{item.label}:</div>
-                  <div className="font-light text-xs">
-                    {item.label === 'Suggestions' &&
-                    Array.isArray(item.value) ? (
-                      <ul className="list-disc pl-5">
-                        {item.value.map((suggestion: string, i: number) => (
-                          <li key={suggestion + i}>{suggestion}</li>
-                        ))}
-                      </ul>
-                    ) : item.value ? (
-                      item.value
-                    ) : (
-                      'N/A'
-                    )}
-                  </div>
-                </li>
-              )
-            )}
-          </ul>
-        </div>
-      </div>
     </div>
   );
 };
